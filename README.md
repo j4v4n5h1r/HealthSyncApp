@@ -1,97 +1,100 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+HealthSyncApp – React Native Health Data Integration
 
-# Getting Started
+This is a React Native project that integrates with Health Connect (Android) and Apple Health (iOS) to sync health data (steps, heart rate, sleep). Bootstrapped using @react-native-community/cli.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+Health Data Sync Demo (Optional: Add screenshot/demo link)
+📋 Prerequisites
 
-## Step 1: Start Metro
+    Environment Setup:
+    Complete the official React Native Environment Guide for:
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+        macOS (iOS development)
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+        Android Studio (Android development)
 
-```sh
-# Using npm
+    Device Requirements:
+
+        Android: Device/emulator with API 28+ (Android 9+) and Health Connect installed
+
+        iOS: Physical iPhone (HealthKit doesn’t work on simulators)
+
+🚀 Quick Start
+1. Install Dependencies
+bash
+Copy
+
+# Install Node modules
+npm install
+
+# Install CocoaPods (iOS only)
+cd ios && pod install && cd ..
+
+2. Start Metro Bundler
+bash
+Copy
+
 npm start
+# Or: yarn start
 
-# OR using Yarn
-yarn start
-```
+3. Run the App
+Android
+bash
+Copy
 
-## Step 2: Build and run your app
-
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
-
-### Android
-
-```sh
-# Using npm
 npm run android
+# Ensure emulator is running or device is connected via USB debugging
 
-# OR using Yarn
-yarn android
-```
+iOS
+bash
+Copy
 
-### iOS
-
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
-
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
-
-```sh
-bundle install
-```
-
-Then, and every time you update your native dependencies, run:
-
-```sh
-bundle exec pod install
-```
-
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
-
-```sh
-# Using npm
 npm run ios
+# Requires physical iPhone connected via USB
 
-# OR using Yarn
-yarn ios
-```
+🔧 Advanced Setup
+Android-Specific
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+    Health Connect Permissions:
+    Add to android/app/src/main/AndroidManifest.xml:
+    xml
+    Copy
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+    <uses-permission android:name="android.permission.health.READ_STEPS"/>
+    <uses-permission android:name="android.permission.health.READ_HEART_RATE"/>
+    <uses-permission android:name="android.permission.health.READ_SLEEP"/>
 
-## Step 3: Modify your app
+    Run HTML
 
-Now that you have successfully run the app, let's make changes!
+iOS-Specific
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+    HealthKit Entitlements:
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+        Enable in Xcode: Signing & Capabilities → + Capability → HealthKit
 
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+        Add to Info.plist:
+        xml
+        Copy
 
-## Congratulations! :tada:
+        <key>NSHealthShareUsageDescription</key>
+        <string>We need access to your health data</string>
 
-You've successfully run and modified your React Native App. :partying_face:
+        Run HTML
 
-### Now what?
+🛠 Troubleshooting
+Issue	Solution
+adb: command not found	Install Android Platform Tools: brew install android-platform-tools
+No emulators found	Create AVD: avdmanager create avd -n Pixel_5 -k "system-images;android-33;google_apis;x86_64"
+HealthKit permissions not showing	Ensure you’re using a physical iOS device
+CocoaPods errors	Run arch -x86_64 pod install for M1/M2 Macs
+📚 Documentation
+Topic	Link
+Health Connect (Android)	Developer Guide
+HealthKit (iOS)	Apple Documentation
+React Native Bridging	Native Modules Guide
+🎯 Features
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
+    Cross-platform health data sync
 
-# Troubleshooting
+    Real-time updates for steps, heart rate, and sleep
 
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+    Permission management UI

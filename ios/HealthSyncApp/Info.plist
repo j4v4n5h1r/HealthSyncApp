@@ -48,5 +48,9 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NSHealthShareUsageDescription</key>
+	<string>We need access to your health data to track steps, heart rate, and sleep</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>We need to update your health data</string>
 </dict>
 </plist>
