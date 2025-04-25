@@ -1,55 +1,72 @@
-import React, {useState, useEffect} from 'react';
-import {View, StyleSheet} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet } from 'react-native';
 import HealthDataDisplay from './components/HealthDataDisplay';
-import HealthModule from './modules/HealthModule';
-import {HealthData, HealthPermissionStatus} from './types/health';
+import { useHealthData } from './hooks/useHealthData';
+import { useHealthSync } from './hooks/useHealthSync';
 
 const App = () => {
-  const [healthData, setHealthData] = useState<HealthData | null>(null);
-  const [permissions, setPermissions] = useState<HealthPermissionStatus | null>(null);
+  const [userId] = useState('user-123'); // In a real app, get from auth context
+  const [authToken] = useState('auth-token-xyz'); // In a real app, get from auth context
+  
+  const {
+    stepsData,
+    heartRateData,
+    sleepData,
+    totalSteps,
+    avgHeartRate,
+    totalSleepHours,
+    isLoading,
+    error,
+    permissions,
+    checkPermissions,
+    requestPermissions,
+    fetchHealthData,
+  } = useHealthData();
+
+  const { syncAllHealthData } = useHealthSync(userId, authToken);
 
   useEffect(() => {
-    checkPermissions();
-    fetchHealthData();
+    const loadInitialData = async () => {
+      await checkPermissions();
+      if (permissions.allGranted) {
+        await fetchHealthData(
+          new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // Last 7 days
+          new Date()
+        );
+      }
+    };
+    
+    loadInitialData();
   }, []);
 
-  const checkPermissions = async () => {
-    try {
-      const status = await HealthModule.checkPermissions();
-      setPermissions(status);
-    } catch (error) {
-      console.error('Error checking permissions:', error);
-    }
+  const handleRefresh = async () => {
+    await fetchHealthData(
+      new Date(Date.now() - 24 * 60 * 60 * 1000), // Last 24 hours
+      new Date()
+    );
   };
 
-  const fetchHealthData = async () => {
-    try {
-      const data = await HealthModule.fetchHealthData();
-      setHealthData(data);
-    } catch (error) {
-      console.error('Error fetching health data:', error);
-    }
-  };
-
-  const requestPermissions = async () => {
-    try {
-      const granted = await HealthModule.requestPermissions();
-      setPermissions(granted);
-      if (granted.steps && granted.heartRate && granted.sleep) {
-        fetchHealthData();
-      }
-    } catch (error) {
-      console.error('Error requesting permissions:', error);
-    }
+  const handleSync = async () => {
+    await syncAllHealthData(
+      new Date(Date.now() - 24 * 60 * 60 * 1000), // Last 24 hours
+      new Date()
+    );
   };
 
   return (
     <View style={styles.container}>
       <HealthDataDisplay
-        healthData={healthData}
-        onRefresh={fetchHealthData}
-        onRequestPermissions={requestPermissions}
+        healthData={{
+          steps: stepsData,
+          heartRate: heartRateData,
+          sleep: sleepData,
+        }}
+        isLoading={isLoading}
+        error={error}
         permissions={permissions}
+        onRefresh={handleRefresh}
+        onRequestPermissions={requestPermissions}
+        onSync={handleSync}
       />
     </View>
   );
@@ -59,6 +76,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 50,
+    backgroundColor: '#fff',
   },
 });
 
